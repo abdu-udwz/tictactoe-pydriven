@@ -1,0 +1,4 @@
+# ignore rollup-plugin-visualizer stat
+stats.html
+!.env
+.env.*.local

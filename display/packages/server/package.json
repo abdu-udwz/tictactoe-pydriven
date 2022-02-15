@@ -1,0 +1,39 @@
+{
+  "name": "tictactoe-pydriven-server",
+  "version": "0.1.0",
+  "private": true,
+  "description": "",
+  "scripts": {
+    "dev": "ts-node-dev -r tsconfig-paths/register -r dotenv/config src/bin/www.ts",
+    "build": "tsc",
+    "lint": "eslint --ext .ts,.js ./",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "license": "MIT",
+  "author": {
+    "name": "Abdulhamid Zoubi",
+    "email": "zoubi.abdulhamid@gmail.com"
+  },
+  "devDependencies": {
+    "@tsconfig/node14": "^1.0.1",
+    "@types/express": "^4.17.13",
+    "@types/morgan": "^1.9.3",
+    "@types/node": "^14.11.6",
+    "rimraf": "^3.0.2",
+    "ts-node-dev": "^1.1.8",
+    "url-join": "^4.0.1"
+  },
+  "dependencies": {
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "mongodb": "^4.3.1",
+    "mongoose": "^6.2.0",
+    "morgan": "^1.10.0",
+    "tsconfig-paths": "^3.10.1",
+    "winston": "^3.3.3",
+    "winston-daily-rotate-file": "^4.5.5"
+  },
+  "engines": {
+    "node": ">= 14"
+  }
+}

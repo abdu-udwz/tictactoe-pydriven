@@ -1,0 +1,34 @@
+{
+  "name": "tictactoe-pydriven-app",
+  "private": true,
+  "version": "0.1.0",
+  "license": "MIT",
+  "author": {
+    "name": "Abdulhamid Zoubi",
+    "email": "zoubi.abdulhamid@gmail.com"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "serve": "vite preview",
+    "lint": "eslint \"**/*.{vue,ts,js}\"",
+    "lint:fix": "eslint \"**/*.{vue,ts,js}\" --fix"
+  },
+  "dependencies": {
+    "@vue/composition-api": "^1.4.2",
+    "axios": "^0.25.0",
+    "deepmerge": "^4.2.2",
+    "vue": "2.6.14",
+    "vuetify": "^2.6.1"
+  },
+  "devDependencies": {
+    "@types/node": "^16.11.12",
+    "eslint-plugin-vue": "^8.2.0",
+    "rollup-plugin-visualizer": "^5.5.2",
+    "sass": "~1.32.13",
+    "unplugin-vue-components": "^0.17.8",
+    "vite": "^2.7.1",
+    "vite-plugin-vue2": "^1.9.0",
+    "vue-template-compiler": "^2.6.14"
+  }
+}
