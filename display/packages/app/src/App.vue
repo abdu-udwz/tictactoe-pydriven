@@ -4,12 +4,16 @@
     <VMain>
       <VContainer 
         fluid
-        class="d-flex justify-center fill-height"
+        class="d-flex justify-center"
+        :style="$vuetify.application.height"
       >
         <!-- join/leave form -->
         <VRow justify="center">
           <VCol cols="12">
-            <VCard>
+            <VCard
+              max-width="50vw"
+              class="mx-auto"
+            >
               <VForm
                 v-if="board == null"
                 ref="joinForm"
