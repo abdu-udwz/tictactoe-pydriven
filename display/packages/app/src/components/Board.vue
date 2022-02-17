@@ -1,0 +1,111 @@
+<script lang="ts">
+// vue
+import Vue from 'vue'
+import type { PropType } from 'vue'
+
+interface Box {
+  value: -1 | 0 | 1
+  displayValue: string
+}
+
+function parseRawBox (value: -1 | 1 | 0): Box {
+  const box: Box = {
+    value,
+    displayValue: '',
+  }
+
+  if (value === 0) {
+    box.displayValue = 'O'
+  } else if (value === 1) {
+    box.displayValue = 'X'
+  }
+
+  return box
+}
+
+export default Vue.extend({
+  name: 'GameBoard',
+  props: {
+    // @ts-expect-error
+    value: {
+      type: Array,
+      required: true,
+    } as PropType<Array<Array<Box['value']>>>,
+  }, 
+
+  computed: {
+    internalMatrix (): Box[]{
+      const boxes: Box[] = []
+      for (const row of this.value) {
+        for (const rawBox of row) {
+          boxes.push(parseRawBox(rawBox))
+        }
+      }
+      return boxes
+    },
+  },
+})
+</script>
+
+<template>
+  <div class="game-board-container">
+    <VCard
+      class="game-board"
+      flat
+    >
+      <VCard 
+        v-for="(box, index) of internalMatrix"
+        :key="index"
+        class="game-board__box d-flex justify-center align-center pa-2 pa-md-4"
+        :class="[box.value === -1 ? 'empty' : box.value === 0 ? 'oh' : 'ex']"
+        flat
+      >
+        <span
+          class="game-board__box-text text-h3 text-md-h2"
+          v-text="box.displayValue"
+        />
+        <span class="game-board__box-index text-caption">{{ index }}</span>
+      </VCard>
+    </VCard>
+  </div>
+</template>
+
+<style scoped>
+.game-board-container {
+  width: 100%;
+  padding-top: 100%; /* 1:1 Aspect Ratio */
+  position: relative; /* If you want text inside of it */
+}
+
+.game-board {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template: repeat(3, 1fr)/ repeat(3, 1fr);
+  gap: 5px;
+}
+
+.game-board__box {
+  box-shadow: inset 0px 2px 10px rgb(0, 0, 0, 15%) !important;
+  position: relative;
+}
+
+.game-board__box.ex .game-board__box-text {
+  color: limegreen;
+  text-shadow: limegreen 0 1px, limegreen 0 2px;
+}
+
+.game-board__box.oh .game-board__box-text {
+  color: red;
+  text-shadow: rgb(184, 33, 33) 0 2px;
+}
+
+.game-board__box-index {
+  position: absolute;
+  width: 100%;
+  bottom: 3px;
+  left: 50%;
+  opacity: 0.4;
+}
+
+</style>

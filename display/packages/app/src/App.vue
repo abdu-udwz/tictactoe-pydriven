@@ -69,7 +69,10 @@
                   indeterminate
                   size="96"
                 />
-                {{ board }}
+                <GameBoard
+                  v-if="!loadingBoard && board != null"
+                  :value="board.matrix"
+                />
               </VCardText>
             </VCard>
           </VCol>
