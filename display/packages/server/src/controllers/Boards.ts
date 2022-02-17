@@ -15,7 +15,7 @@ interface GetBoardReqParams {
 export async function getOne (req: Request<GetBoardReqParams>, res: Response): Promise<any> {
   try {
     logger.info('trying to get board', { name: req.params.name })
-    const result = await getBoardByName(req.body.name)
+    const result = await getBoardByName(req.params.name)
     if (typeof result == 'string') {
       return res.status(404).json(result)
     } else {
