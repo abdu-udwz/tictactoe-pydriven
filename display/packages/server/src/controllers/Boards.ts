@@ -1,17 +1,27 @@
 // express
 import type { Request, Response } from 'express'
 // service
-import { create as createBoard, getOne as getBoardByName } from '@/services/Boards'
+import {
+  create as createBoard, 
+  getOne as getBoardByName, 
+  updateOne as updateBoard, 
+} from '@/services/Boards'
 // util
 import mainLogger from '@/util/logger'
+// types
+import type { BoardMatrix } from '@/types'
+
 const logger = mainLogger.child({
   service: 'boards-controller',
 })
 
-// === read
-interface GetBoardReqParams {
+interface SingleBoardReqParams {
   name: string
 }
+
+// === read
+type GetBoardReqParams = SingleBoardReqParams
+
 export async function getOne (req: Request<GetBoardReqParams>, res: Response): Promise<any> {
   try {
     logger.info('trying to get board', { name: req.params.name })
@@ -56,6 +66,34 @@ export async function createOne (req: Request<any, any, CreateBoardReqBody>, res
   }
 }
 
-// export async function updateOne (req: Request, res: Response): Promise<any> {
+interface UpdateBoardReqBody {
+  matrix?: BoardMatrix
+}
 
-// }
+export async function updateOne (req: Request<SingleBoardReqParams, any, UpdateBoardReqBody>, res: Response): Promise<any> {
+  try {
+    const { name: boardName } = req.params
+    logger.info('attempt to update board', { name: boardName } )
+
+    if (req.body.matrix == null || !Array.isArray(req.body.matrix)) {
+      return res.status(400).json('INVALID_MATRIX')
+    }
+
+    const result = await updateBoard(boardName, { matrix: req.body.matrix })
+
+    if (typeof result === 'string') {
+      switch (result) {
+        case 'NO_SUCH_BOARD':
+          res.status(404)
+          break
+      }
+
+      return res.send()
+    }
+
+    return res.json(result)
+  } catch (error: any) {
+    logger.error('unknown error while updating board', { name: req.params.name, error })
+    return res.sendStatus(500)
+  }
+}

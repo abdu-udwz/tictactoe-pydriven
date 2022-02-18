@@ -3,9 +3,12 @@
 // models
 import BoardModel, { BoardDocument } from '@/models/Board'
 import { Error as MongooseError } from 'mongoose'
+import type { BoardMatrix } from '@/types'
 // util
 import mainLogger from '@/util/logger'
 const logger = mainLogger.child({ service: 'boards-service' })
+
+type NoSuchBoardError = 'NO_SUCH_BOARD'
 
 type BoardCreateError = 'BOARD_EXISTS' | 'INVALID_NAME'
 
@@ -31,7 +34,29 @@ export async function create (name: string): Promise<BoardDocument | BoardCreate
   }
 }
 
-type BoardGetError = 'NO_SUCH_BOARD'
+type BoardUpdateError = NoSuchBoardError
+
+interface UpdateBoardPayload {
+  matrix: BoardMatrix
+}
+
+export async function updateOne (name: string, payload: UpdateBoardPayload): Promise<BoardDocument | BoardUpdateError> {
+  let board = await BoardModel.findOne({ name: name.toLowerCase() })
+
+  if (board == null) {
+    return 'NO_SUCH_BOARD'
+  }
+
+  // todo make validation
+  for (const [key, value] of Object.entries(payload)) {
+    board.set(key, value)
+  }
+
+  board = await board.save()
+  return board
+}
+
+type BoardGetError = NoSuchBoardError
 
 export async function getOne (name: string): Promise<BoardDocument | BoardGetError> {
   try {
@@ -50,3 +75,4 @@ export async function getOne (name: string): Promise<BoardDocument | BoardGetErr
     return 'NO_SUCH_BOARD'
   }
 }
+

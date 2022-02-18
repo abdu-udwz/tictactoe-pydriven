@@ -29,6 +29,11 @@ const boardSchema = new Schema<Board, BoardModel>(
       type: [[Number]],
       required: true,
       default: genEmptyBoardMatrix,
+      validate (matrix: BoardMatrix) {
+        // could be a bit performance neck, but negligible for the size of the user-base
+        return Array.isArray(matrix) && matrix.length === 3 
+          && matrix.every(row => row.length === 3 && row.every(boxValue => [-1, 0, 1].includes(boxValue)))
+      },
     },
 
     lastUsed: {
