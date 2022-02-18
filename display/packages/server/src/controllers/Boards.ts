@@ -88,6 +88,7 @@ export async function updateOne (req: Request<SingleBoardReqParams, any, UpdateB
           break
       }
 
+      res.json(result)
       return res.send()
     }
 

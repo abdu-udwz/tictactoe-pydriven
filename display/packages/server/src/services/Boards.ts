@@ -34,7 +34,8 @@ export async function create (name: string): Promise<BoardDocument | BoardCreate
   }
 }
 
-type BoardUpdateError = NoSuchBoardError
+type BoardMatrixBoardUpDateError = 'BAD_MOVE' | 'BOX_OCCUPIED' | 'OTHER_PLAYER_ROLE'  
+type BoardUpdateError = NoSuchBoardError | 'GAME_ENDED' | BoardMatrixBoardUpDateError
 
 interface UpdateBoardPayload {
   matrix: BoardMatrix
@@ -44,15 +45,41 @@ export async function updateOne (name: string, payload: UpdateBoardPayload): Pro
   let board = await BoardModel.findOne({ name: name.toLowerCase() })
 
   if (board == null) {
+    logger.info('trying to update non-existing board', { name })
     return 'NO_SUCH_BOARD'
   }
 
-  // todo make validation
-  for (const [key, value] of Object.entries(payload)) {
-    board.set(key, value)
+  if (board.hasEnded) {
+    logger.info('trying to update a game that has finished', { name })
+    return 'GAME_ENDED'
   }
 
+  const oldMatrix = board.matrix
+  const newMatrix = payload.matrix
+
+  if (board.firstPlayer == null) {
+    loop1:
+    for (const row of newMatrix) {
+      // console.log(row.find(value => value !== -1))
+      for (const value of row) {
+        if (value !== -1) {
+          board.firstPlayer = value
+          break loop1
+        }
+      }
+    }
+  }
+
+  console.log(board.firstPlayer)
+  const validation = validateNewBoardMatrix(oldMatrix, newMatrix, board.firstPlayer as 0 | 1)
+  if (validation !== true) {
+    return validation
+  }
+
+  board.set('matrix', payload.matrix)
+
   board = await board.save()
+  logger.info('board updated successfully', { name }) 
   return board
 }
 
@@ -75,4 +102,83 @@ export async function getOne (name: string): Promise<BoardDocument | BoardGetErr
     return 'NO_SUCH_BOARD'
   }
 }
+function validateNewBoardMatrix (
+  oldMatrix: BoardMatrix,
+  newMatrix: BoardMatrix,
+  firstPlayer: 0 | 1): true | BoardMatrixBoardUpDateError  {
+  // === validation ===
+  // * only one box is allowed to be updated a time
+  // * cannot overwrite a box
+  // * cannot undo a box
+  // * respect role
+  //   role can be determined with this formula:
+  //   same number of boxes (including zeros) => first player role otherwise second player role
+  const oldOPositions = buildPlayerPositionsMap(oldMatrix, 0)
+  const oldXPositions = buildPlayerPositionsMap(oldMatrix, 1)
+  
+  const newOPositions = buildPlayerPositionsMap(newMatrix, 0)
+  const newXPositions = buildPlayerPositionsMap(newMatrix, 1)
 
+  const oldOccupied = oldOPositions.length + oldXPositions.length
+  const newOccupied = newOPositions.length + newXPositions.length
+
+  if (newOccupied - oldOccupied !== 1) {
+    // a corrupted move generally (multiple new, nothing, removing old)
+    return 'BAD_MOVE'
+  }
+  
+  const oOverwritten = !oldOPositions.every(([row, col]) => newMatrix[row][col] === 0)
+  const xOverwritten = !oldXPositions.every(([row, col]) => newMatrix[row][col] === 1)
+  // console.log('o overwritten?', oOverwritten, 'x overwritten?', xOverwritten)
+  if (oOverwritten || xOverwritten) {
+    return 'BOX_OCCUPIED'
+  }
+
+  const firstPlayerNewPositions = firstPlayer === 0 
+    ? newOPositions
+    : newXPositions
+  const secondPlayerNewPositions = firstPlayer === 0 
+    ? newXPositions
+    : newOPositions
+  
+  if (oldOPositions.length === oldXPositions.length) {
+    // only the first player new positions can be greater in this case
+    if (!(firstPlayerNewPositions.length > secondPlayerNewPositions.length)) {
+      return 'OTHER_PLAYER_ROLE'
+    }
+  } else {
+    if (secondPlayerNewPositions.length !== firstPlayerNewPositions.length) {
+      return 'OTHER_PLAYER_ROLE'
+    }
+  }
+
+  return true
+}
+
+// console.log(validateNewBoardMatrix(
+//   [
+//     [0, 1, -1],
+//     [-1, -1, -1],
+//     [-1, -1, -1],
+//   ],
+
+//   [
+//     [0, 1, 0],
+//     [-1, -1, -1],
+//     [-1, -1, -1],
+//   ],
+//   0,
+// ))
+
+function buildPlayerPositionsMap (matrix: number[][], player: 0 | 1): Array<[number, number]> {
+  const result: ReturnType<typeof buildPlayerPositionsMap> = []
+  matrix.forEach((row, rowIndex) =>
+    row.forEach((value, colIndex) => {
+      if (value === player) {
+        result.push([rowIndex, colIndex])
+      }
+    }),
+  )
+
+  return result
+}
