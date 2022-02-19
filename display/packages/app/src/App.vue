@@ -97,6 +97,7 @@ import TheAppBar from '@/components/TheAppBar.vue'
 import GameBoard from '@/components/Board.vue'
 // services
 import * as boardsService from '@/services/boards'
+import socketService from '@/services/socket'
 // types
 import type { Board } from '@/types'
 
@@ -134,6 +135,19 @@ export default Vue.extend({
   computed: {
     error (): any {
       return this.fetchError ?? null
+    },
+  },
+
+  watch: {
+    board: {
+      deep: false,
+      async handler (value: Board | null) {
+        if (value == null) {
+          socketService.disconnect()
+        } else {
+          socketService.connect()
+        }
+      },
     },
   },
 

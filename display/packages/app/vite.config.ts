@@ -91,6 +91,7 @@ export default defineConfig(({ command, mode  }) => {
           target: serverBaseUrl,
           changeOrigin: true,
           secure: false,
+          ws: true,
         },
       },
     },
