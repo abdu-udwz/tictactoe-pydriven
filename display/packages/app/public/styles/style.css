@@ -1,6 +1,6 @@
-.board-option-text {
+/* .board-option-text {
 
-}
+} */
 
 .board-option-text.oh {
   color: red;
@@ -10,4 +10,21 @@
 .board-option-text.ex {
   color: limegreen;
   text-shadow: limegreen 0 1px, limegreen 0 2px;
+}
+
+.board-option-text.animated {
+  animation: scale-up 1.2s 1;
+}
+
+@keyframes scale-up {
+  0%, 18% {
+    color: transparent;
+    transform: scale(0.8);
+    opacity: 0.2;
+  }
+
+  25% {
+    opacity: 1;
+    transform: scale(1);
+  }
 }

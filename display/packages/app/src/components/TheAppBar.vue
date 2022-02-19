@@ -15,11 +15,13 @@ export default Vue.extend({
   <VAppBar app>
     <VToolbarTitle>TicTacToe Py-Driven</VToolbarTitle>
     <VSpacer />
-    <VBtn 
-      icon
-      @click="$vuetify.theme.dark = !$vuetify.theme.dark"
-    >
-      <VIcon v-text="themeIcon" />
-    </VBtn>
+    <VToolbarItems>
+      <VBtn 
+        icon
+        @click="$vuetify.theme.dark = !$vuetify.theme.dark"
+      >
+        <VIcon v-text="themeIcon" />
+      </VBtn>
+    </VToolbarItems>
   </VAppBar>
 </template>

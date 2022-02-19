@@ -66,11 +66,14 @@ export default Vue.extend({
         flat
       >
         <span
-          class="game-board__box-text board-option-text text-h3 text-md-h2"
+          v-if="box.value !== -1"
+          class="game-board__box-text board-option-text animated text-h3 text-md-h2"
           :class="[box.value === -1 ? 'empty' : box.value === 0 ? 'oh' : 'ex']"
           v-text="box.displayValue"
         />
-        <span class="game-board__box-index text-caption">{{ box.coordinate[0] + 1 }}/{{ box.coordinate[1] + 1 }}</span>
+        <div class="game-board__box-index text-caption">
+          {{ box.coordinate[0] + 1 }}/{{ box.coordinate[1] + 1 }}
+        </div>
       </VCard>
     </VCard>
   </div>
@@ -98,10 +101,11 @@ export default Vue.extend({
 
 .game-board__box-index {
   position: absolute;
-  width: 100%;
   bottom: 3px;
-  left: 50%;
-  opacity: 0.4;
+  left: 0;
+  right: 0;
+  text-align: center;
+  opacity: 0.6;
 }
 
 </style>

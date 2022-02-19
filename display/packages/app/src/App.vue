@@ -11,7 +11,7 @@
           <!-- join/leave form -->
           <VCol cols="12">
             <VCard
-              max-width="50vw"
+              :max-width="$vuetify.breakpoint.mdAndUp? '50vw' : '90vw'"
               class="mx-auto"
             >
               <VForm
@@ -67,6 +67,7 @@
               v-show="loadingBoard || board != null"
               :disabled="loadingBoard" 
               flat
+              tag="section"
             >
               <VCardText>
                 <VProgressCircular 
@@ -117,6 +118,26 @@
                   </section>
                 </VOverlay>     
               </VCardText>
+              <VCardActions
+                v-if="board != null"
+                class="justify-end"
+              >
+                <span class="mr-2 text-caption">Board ID</span>  
+                <VChip
+                  small
+                  outlined
+                  label
+                  filter
+                >
+                  <VIcon
+                    x-small
+                    class="mr-2"
+                  >
+                    mdi-tag-outline
+                  </VIcon>
+                  {{ board.name }}
+                </VChip>
+              </VCardActions>
             </VCard>
 
             <VBtn
@@ -150,7 +171,7 @@
       </VContainer>
     </VMain>
     <!-- on-the-fly notifications -->
-    <VSnackbar 
+    <VSnackbar
       v-model="notificationsBar.value"
       text
       app
