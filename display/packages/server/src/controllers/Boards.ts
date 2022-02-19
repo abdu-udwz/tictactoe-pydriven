@@ -6,6 +6,7 @@ import {
   getOne as getBoardByName, 
   updateOne as updateBoard, 
 } from '@/services/Boards'
+import Sockets from '@/services/Sockets'
 // util
 import mainLogger from '@/util/logger'
 // types
@@ -89,12 +90,18 @@ export async function updateOne (req: Request<SingleBoardReqParams, any, UpdateB
       }
 
       res.json(result)
+      emitToBoardRoom(boardName, 'boardUpdateError', result)
       return res.send()
     }
 
+    emitToBoardRoom(boardName, 'boardUpdate', result)
     return res.json(result)
   } catch (error: any) {
     logger.error('unknown error while updating board', { name: req.params.name, error })
     return res.sendStatus(500)
   }
+}
+
+function emitToBoardRoom (name: string, event: string, ...args: any[]): void {
+  Sockets.io.to(`room-${name}`).emit(event, ...args)
 }

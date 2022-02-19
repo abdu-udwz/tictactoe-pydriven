@@ -13,7 +13,17 @@ export function init (server: HttpServer): void{
 
 
   ioServer.on('connection', (socket) => {
-    logger.info('user connected', { id: socket.id })
+    logger.info('user connected', { socketId: socket.id })
+    socket.on('joinRoom', (name: string, ack: (error: any, joined: boolean) => void) => {
+      socket.join(`room-${name}`)
+      ack(null, true)
+      socket.board = name
+      logger.info('user joined game room', { socketId: socket.id, board: name })
+    })
+
+    socket.on('disconnect', () => {
+      logger.info('user disconnected', { socketId: socket.id, board: socket.board })
+    })
   })
 }
 

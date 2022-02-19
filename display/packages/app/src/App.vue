@@ -153,6 +153,24 @@ export default Vue.extend({
 
   created () {
     this.boardName = localStorage.getItem(BOARD_NAME_STORAGE_KEY) ?? ''
+
+    socketService.removeAllListeners()
+
+    socketService.on('boardUpdate', (board: Board) => {
+      console.log('received an update to board', board)
+    })
+    
+    socketService.on('boardUpdateError', (error: string) => {
+      console.log('received an update error to board', error)
+    })
+
+    socketService.on('connect', () => {
+      // this is fired for reconnection as well
+      // the user could have lost connection for a second while playing
+      if (this.board?.name != null) {
+        this.joinBoardRoom()
+      }
+    })
   },
 
   methods: {
@@ -204,6 +222,20 @@ export default Vue.extend({
 
     updateCachedName (name: string): void {
       localStorage.setItem(BOARD_NAME_STORAGE_KEY, name)
+    },
+
+    // socket-related
+    joinBoardRoom (): void {
+      if (this.board == null) {
+        return 
+      }
+      socketService.emit('joinRoom', this.board.name, (error: any, joined: boolean) => {
+        if (error != null || !joined) {
+          console.log('could not join game room', error)
+        } else {
+          console.log('join game room successfully')      
+        }
+      })
     },
   },
 })
