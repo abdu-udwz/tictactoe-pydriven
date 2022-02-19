@@ -3,6 +3,11 @@ export interface Board {
   name: string
   matrix: number[][]
   lastUsed: Date
+
+  winner?: null | 0 | 1
+  isDraw?: boolean
+  hasStarted: boolean
+  hasEnded: boolean
 }
 
 import type { io as IO } from 'socket.io-client'

@@ -1,0 +1,13 @@
+.board-option-text {
+
+}
+
+.board-option-text.oh {
+  color: red;
+  text-shadow: rgb(184, 33, 33) 0 2px;
+}
+
+.board-option-text.ex {
+  color: limegreen;
+  text-shadow: limegreen 0 1px, limegreen 0 2px;
+}

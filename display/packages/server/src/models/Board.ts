@@ -75,6 +75,14 @@ const boardSchema = new Schema<Board, BoardModel>(
   },
   {
     timestamps: true,
+    toJSON: {
+      virtuals: true,
+      getters: true,
+    },
+    toObject: {
+      getters: true,
+      virtuals: true,
+    },
   },
 )
 

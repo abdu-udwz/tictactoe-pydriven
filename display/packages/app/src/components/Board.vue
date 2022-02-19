@@ -57,11 +57,11 @@ export default Vue.extend({
         v-for="(box, index) of internalMatrix"
         :key="index"
         class="game-board__box d-flex justify-center align-center pa-2 pa-md-4"
-        :class="[box.value === -1 ? 'empty' : box.value === 0 ? 'oh' : 'ex']"
         flat
       >
         <span
-          class="game-board__box-text text-h3 text-md-h2"
+          class="game-board__box-text board-option-text text-h3 text-md-h2"
+          :class="[box.value === -1 ? 'empty' : box.value === 0 ? 'oh' : 'ex']"
           v-text="box.displayValue"
         />
         <span class="game-board__box-index text-caption">{{ index }}</span>
@@ -88,16 +88,6 @@ export default Vue.extend({
 .game-board__box {
   box-shadow: inset 0px 2px 10px rgb(0, 0, 0, 15%) !important;
   position: relative;
-}
-
-.game-board__box.ex .game-board__box-text {
-  color: limegreen;
-  text-shadow: limegreen 0 1px, limegreen 0 2px;
-}
-
-.game-board__box.oh .game-board__box-text {
-  color: red;
-  text-shadow: rgb(184, 33, 33) 0 2px;
 }
 
 .game-board__box-index {

@@ -77,7 +77,44 @@
                 <GameBoard
                   v-if="!loadingBoard && board != null"
                   :value="board.matrix"
-                />                
+                />
+                <VOverlay
+                  v-if="board != null && board.hasEnded"
+                  absolute
+                  opacity="0.7"
+                  z-index="2"
+                >
+                  <section class="d-flex flex-column align-center">
+                    <!-- win -->
+                    <h2 
+                      v-show="board.winner != null"
+                      class="text-center"
+                    >
+                      <span 
+                        class="board-option-text text-h1"
+                        :class="board.winner === 0 ? 'oh' : 'ex'"
+                      >{{ board.winner === 0? 'O' : 'X' }}</span>
+                      <br>
+                      <span class="text-h5 font-weight-bold">WINS</span>
+                    </h2>
+                    <!-- draw -->
+                    <h2
+                      v-show="board.isDraw"
+                      class="is-draw-text text-h2"
+                    >
+                      DRAW
+                    </h2>
+                    <VBtn
+                      text
+                      class="mt-12 text-body-2"
+                    >
+                      <VIcon left>
+                        mdi-restart
+                      </VIcon>
+                      <span>Restart game</span>
+                    </VBtn>
+                  </section>
+                </VOverlay>     
               </VCardText>
             </VCard>
           </VCol>
@@ -178,7 +215,7 @@ export default Vue.extend({
         return
       }
 
-      this.$set(this.board, 'matrix', board.matrix)
+      this.$set(this, 'board', board)
     })
     
     socketService.on('boardUpdateError', (error: string) => {
@@ -280,5 +317,8 @@ export default Vue.extend({
 })
 </script>
 
-<style>
-</style>
+<style scoped>
+.is-draw-text {
+  color: orange
+}
+</style>>
