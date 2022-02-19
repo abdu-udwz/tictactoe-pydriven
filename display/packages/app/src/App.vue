@@ -80,8 +80,6 @@
                 />                
               </VCardText>
             </VCard>
-
-            <VBtn @click="notificationsBar.value = true">open</VBtn>
           </VCol>
         </VRow>
       </VContainer>

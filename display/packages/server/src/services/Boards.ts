@@ -70,7 +70,6 @@ export async function updateOne (name: string, payload: UpdateBoardPayload): Pro
     }
   }
 
-  console.log(board.firstPlayer)
   const validation = validateNewBoardMatrix(oldMatrix, newMatrix, board.firstPlayer as 0 | 1)
   if (validation !== true) {
     return validation
