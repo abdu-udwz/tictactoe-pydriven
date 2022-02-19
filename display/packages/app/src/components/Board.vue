@@ -6,12 +6,14 @@ import type { PropType } from 'vue'
 interface Box {
   value: -1 | 0 | 1
   displayValue: string
+  coordinate: [number, number]
 }
 
 function parseRawBox (value: -1 | 1 | 0): Box {
   const box: Box = {
     value,
     displayValue: '',
+    coordinate: [0, 0],
   }
 
   if (value === 0) {
@@ -36,9 +38,13 @@ export default Vue.extend({
   computed: {
     internalMatrix (): Box[]{
       const boxes: Box[] = []
-      for (const row of this.value) {
-        for (const rawBox of row) {
-          boxes.push(parseRawBox(rawBox))
+      for (let rowIndex = 0; rowIndex < this.value.length; rowIndex++ ) {
+        const row = this.value[rowIndex]
+        for (let colIndex = 0; colIndex< row.length; colIndex++) {
+          const rawBox = row[colIndex]
+          const parsedBox = parseRawBox(rawBox)
+          parsedBox.coordinate = [rowIndex, colIndex]
+          boxes.push(parsedBox)
         }
       }
       return boxes
@@ -64,7 +70,7 @@ export default Vue.extend({
           :class="[box.value === -1 ? 'empty' : box.value === 0 ? 'oh' : 'ex']"
           v-text="box.displayValue"
         />
-        <span class="game-board__box-index text-caption">{{ index }}</span>
+        <span class="game-board__box-index text-caption">{{ box.coordinate[0] + 1 }}/{{ box.coordinate[1] + 1 }}</span>
       </VCard>
     </VCard>
   </div>
