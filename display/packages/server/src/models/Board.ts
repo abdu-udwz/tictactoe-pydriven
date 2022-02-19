@@ -86,6 +86,8 @@ const boardSchema = new Schema<Board, BoardModel>(
   },
 )
 
+boardSchema.index( { lastUsed: -1 }, { expires: '3d' })
+
 boardSchema.virtual('hasStarted').get(function (this: BoardDocument) {
   return this.matrix.some(row => row.some(value => value !== -1))
 })
