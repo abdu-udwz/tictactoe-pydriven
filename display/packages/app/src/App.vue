@@ -7,8 +7,8 @@
         class="d-flex justify-center"
         :style="$vuetify.application.height"
       >
-        <!-- join/leave form -->
         <VRow justify="center">
+          <!-- join/leave form -->
           <VCol cols="12">
             <VCard
               max-width="50vw"
@@ -57,6 +57,7 @@
               </div>
             </VCard>
           </VCol>
+          <!-- game board -->
           <VCol
             cols="12"
             sm="6"
@@ -76,13 +77,25 @@
                 <GameBoard
                   v-if="!loadingBoard && board != null"
                   :value="board.matrix"
-                />
+                />                
               </VCardText>
             </VCard>
+
+            <VBtn @click="notificationsBar.value = true">open</VBtn>
           </VCol>
         </VRow>
       </VContainer>
     </VMain>
+    <!-- on-the-fly notifications -->
+    <VSnackbar 
+      v-model="notificationsBar.value"
+      text
+      app
+      timeout="2000"
+      color="error"
+    >
+      {{ notificationsBar.text }}
+    </VSnackbar>
     <VFooter app>
       {{ error }}
     </VFooter>
@@ -118,6 +131,12 @@ export default Vue.extend({
       loadingBoard: false,
 
       fetchError: null as any,
+
+      notificationsBar: {
+        value: false,
+        text: '',
+      },
+      boardError: null as null | string,
 
       rules: {
         boardName (val?: string): string | boolean {
@@ -157,11 +176,33 @@ export default Vue.extend({
     socketService.removeAllListeners()
 
     socketService.on('boardUpdate', (board: Board) => {
-      console.log('received an update to board', board)
+      if (this.board == null) {
+        return
+      }
+
+      this.$set(this.board, 'matrix', board.matrix)
     })
     
     socketService.on('boardUpdateError', (error: string) => {
-      console.log('received an update error to board', error)
+      // console.log('received an update error to board', error)
+      let errorText = 'Unknown error occurred'
+      switch (error) {
+        case 'BAD_MOVE':
+          errorText = 'Invalid move. Only one box can be updated each time.'
+          break
+        case 'BOX_OCCUPIED':
+          errorText = 'Box already occupied. You cannot overwrite a box.'
+          break
+        case 'GAME_ENDED':
+          errorText = 'Game has already ended. Please restart game.'
+          break
+        case 'OTHER_PLAYER_ROLE':
+          errorText = 'It\'s not your role.'
+          break
+      }
+
+      this.notificationsBar.text = errorText
+      this.notificationsBar.value = true
     })
 
     socketService.on('connect', () => {
