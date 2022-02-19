@@ -13,3 +13,6 @@ export function createOne (data: BoardCreateReqBody, config?: AxiosRequestConfig
   return api.post('/boards', data, config)
 }
 
+export function resetOne (name: string, config?: AxiosRequestConfig): Promise<AxiosResponse<Board>> {
+  return api.post(`/boards/${name}/reset`, config)
+}

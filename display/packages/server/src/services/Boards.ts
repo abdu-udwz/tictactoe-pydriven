@@ -6,6 +6,7 @@ import { Error as MongooseError } from 'mongoose'
 import type { BoardMatrix } from '@/types'
 // util
 import mainLogger from '@/util/logger'
+import { genEmptyBoardMatrix } from '@/util'
 const logger = mainLogger.child({ service: 'boards-service' })
 
 type NoSuchBoardError = 'NO_SUCH_BOARD'
@@ -79,6 +80,24 @@ export async function updateOne (name: string, payload: UpdateBoardPayload): Pro
 
   board = await board.save()
   logger.info('board updated successfully', { name }) 
+  return board
+}
+
+type BoardResetError = NoSuchBoardError
+export async function resetOne (name: string): Promise<BoardDocument | BoardResetError> {
+  const board = await BoardModel.findOne({ name: name.toLowerCase() })
+  if (board == null) {
+    logger.info('trying to reset non-existing board', { name })
+    return 'NO_SUCH_BOARD'
+  }
+
+  board.matrix = genEmptyBoardMatrix()
+  board.firstPlayer = null
+  board.winner = null
+  board.isDraw = false
+
+  await board.save()
+  logger.info('board reset successfully', { name })
   return board
 }
 

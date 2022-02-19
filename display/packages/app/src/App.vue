@@ -107,6 +107,7 @@
                     <VBtn
                       text
                       class="mt-12 text-body-2"
+                      @click="onRestart"
                     >
                       <VIcon left>
                         mdi-restart
@@ -117,6 +118,33 @@
                 </VOverlay>     
               </VCardText>
             </VCard>
+
+            <VBtn
+              v-if="board != null && !board.hasEnded"
+              text
+              block
+              class="mt-4"
+              @click="onRestart"
+            >
+              <VIcon left>
+                mdi-restart
+              </VIcon>
+              <span>Restart game</span>
+            </VBtn>
+
+            <VAlert 
+              v-if="unknownError != null"
+              text 
+              prominent
+              type="error"
+            >
+              <p>
+                An unknown error occurred. Please check your internet connection and try again.
+                <br>
+                <br>
+                If the error persists try refreshing the page or contact the developer.
+              </p>
+            </VAlert>
           </VCol>
         </VRow>
       </VContainer>
@@ -131,9 +159,6 @@
     >
       {{ notificationsBar.text }}
     </VSnackbar>
-    <VFooter app>
-      {{ error }}
-    </VFooter>
   </VApp>
 </template>
 
@@ -165,7 +190,7 @@ export default Vue.extend({
 
       loadingBoard: false,
 
-      fetchError: null as any,
+      unknownError: null as any,
 
       notificationsBar: {
         value: false,
@@ -188,7 +213,7 @@ export default Vue.extend({
 
   computed: {
     error (): any {
-      return this.fetchError ?? null
+      return this.unknownError ?? null
     },
   },
 
@@ -270,7 +295,7 @@ export default Vue.extend({
         }
         this.updateCachedName(this.board?.name ?? '')
       } catch (error: any) {
-        this.fetchError = error
+        this.unknownError = error
       } finally {
         this.loadingBoard = false
       }
@@ -280,16 +305,30 @@ export default Vue.extend({
       this.board = null
     },
 
+    async onRestart () {
+      try {
+        this.unknownError = null
+        this.loadingBoard = true
+        const res = await boardsService.resetOne(this.board?.name ?? '')
+        this.board = res.data
+      } catch (error: any) {
+        this.unknownError = error
+      } finally {
+        this.loadingBoard = false
+      }
+    },
+
     async fetchBoardData (showError=false): Promise<boolean> {
       try {
         this.loadingBoard = true
         const res = await boardsService.getOne(this.boardName)
         this.board = res.data
         this.loadingBoard = false
+        this.unknownError = null
         return true
       } catch (error: any) {
         if (showError) {
-          this.fetchError = error
+          this.unknownError = error
         }
         this.loadingBoard = false
         return false

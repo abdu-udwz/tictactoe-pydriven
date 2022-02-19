@@ -5,6 +5,7 @@ import {
   create as createBoard, 
   getOne as getBoardByName, 
   updateOne as updateBoard, 
+  resetOne as resetBoard,
 } from '@/services/Boards'
 import Sockets from '@/services/Sockets'
 // util
@@ -92,6 +93,26 @@ export async function updateOne (req: Request<SingleBoardReqParams, any, UpdateB
       res.json(result)
       emitToBoardRoom(boardName, 'boardUpdateError', result)
       return res.send()
+    }
+
+    emitToBoardRoom(boardName, 'boardUpdate', result)
+    return res.json(result)
+  } catch (error: any) {
+    logger.error('unknown error while updating board', { name: req.params.name, error })
+    return res.sendStatus(500)
+  }
+}
+
+
+export async function resetOne (req: Request<SingleBoardReqParams>, res: Response): Promise<any> {
+  try {
+    const { name: boardName } = req.params
+    logger.info('attempt to reset board', { name: boardName } )
+
+    const result = await resetBoard(boardName)
+
+    if (typeof result === 'string') {
+      return res.status(404).json(result)
     }
 
     emitToBoardRoom(boardName, 'boardUpdate', result)
