@@ -2,11 +2,24 @@
 // vue
 import Vue from 'vue'
 
+const COLOR_MODE_STORAGE_KEY = 'tttPyColorMode'
+
 export default Vue.extend({
   computed: {
     themeIcon (): string {
       return this.$vuetify.theme.dark ? 'mdi-weather-night' : 'mdi-white-balance-sunny'
     },
+  },
+
+  watch: {
+    '$vuetify.theme.dark' (value) {
+      localStorage.setItem(COLOR_MODE_STORAGE_KEY, value)
+    },
+  },
+
+  created () {
+    const storageValue =  localStorage.getItem(COLOR_MODE_STORAGE_KEY) ?? 'true'
+    this.$vuetify.theme.dark = storageValue === 'true'
   },
 })
 </script>
