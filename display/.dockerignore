@@ -1,0 +1,19 @@
+# The same as gitignore but with docker files
+**/Dockerfile*
+**/docker*
+
+**/.DS_Store
+**/node_modules/
+**/.env
+**/dist/
+
+# IDE user config
+**/.vscode/
+**/.idea/
+**/.vs/
+
+# Logs
+**/yarn-error.log
+**/npm-debug.log
+**/lerna-debug.log
+**/pnpm-debug.log
