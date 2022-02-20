@@ -1,4 +1,4 @@
-from api.api import initialize, update_board
+from api.exposed import initialize, update_board
 
 BOARD_NAME = 'sss'  # enter the board's name (id) as it is on the web app
 

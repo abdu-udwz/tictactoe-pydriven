@@ -1,4 +1,4 @@
-from controller.api import internal
+from api import internal
 
 
 def initialize(base_url):
