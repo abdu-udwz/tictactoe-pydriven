@@ -18,8 +18,8 @@ def main():
 
     for i in range(3):
         board[0][i] = i if i < 2 else 0
-
-        print('updating ....')
+        txt =  'X' if board[0][i] == 1 else 'O'
+        print(f'Update {0 + 1}, {i + 1} to "{txt}"')
         updated_board = update_board(BOARD_NAME, board)
         if type(updated_board) is str:
             print('Could not update board.')
