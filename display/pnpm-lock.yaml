@@ -52,9 +52,11 @@ importers:
   packages/server:
     specifiers:
       '@tsconfig/node14': ^1.0.1
+      '@types/connect-history-api-fallback': ^1.3.5
       '@types/express': ^4.17.13
       '@types/morgan': ^1.9.3
       '@types/node': ^14.11.6
+      connect-history-api-fallback: ^1.6.0
       dotenv: ^10.0.0
       express: ^4.17.1
       mongodb: ^4.3.1
@@ -68,6 +70,7 @@ importers:
       winston: ^3.3.3
       winston-daily-rotate-file: ^4.5.5
     dependencies:
+      connect-history-api-fallback: 1.6.0
       dotenv: 10.0.0
       express: 4.17.2
       mongodb: 4.3.1
@@ -79,6 +82,7 @@ importers:
       winston-daily-rotate-file: 4.6.0_winston@3.6.0
     devDependencies:
       '@tsconfig/node14': 1.0.1
+      '@types/connect-history-api-fallback': 1.3.5
       '@types/express': 4.17.13
       '@types/morgan': 1.9.3
       '@types/node': 14.18.12
@@ -538,6 +542,13 @@ packages:
   /@types/component-emitter/1.2.11:
     resolution: {integrity: sha512-SRXjM+tfsSlA9VuG8hGO2nft2p8zjXCK1VcC6N4NXbBbYbSia9kzCChYQajIjzIqOOOuh5Ock6MmV2oux4jDZQ==}
     dev: false
+
+  /@types/connect-history-api-fallback/1.3.5:
+    resolution: {integrity: sha512-h8QJa8xSb1WD4fpKBDcATDNGXghFj6/3GRWG6dhmRcu0RX1Ubasur2Uvx5aeEwlf0MwblEC2bMzzMQntxnw/Cw==}
+    dependencies:
+      '@types/express-serve-static-core': 4.17.28
+      '@types/node': 16.11.25
+    dev: true
 
   /@types/connect/3.4.35:
     resolution: {integrity: sha512-cdeYyv4KWoEgpBISTxWvqYsVy444DOqehiF3fM3ne10AmJ62RSyNkUnxMJXHQWRQQX2eR94m5y1IZyDwBjV9FQ==}
@@ -1197,6 +1208,11 @@ packages:
   /concat-map/0.0.1:
     resolution: {integrity: sha1-2Klr13/Wjfd5OnMDajug1UBdR3s=}
     dev: true
+
+  /connect-history-api-fallback/1.6.0:
+    resolution: {integrity: sha512-e54B99q/OUoH64zYYRf3HBP5z24G38h5D3qXu23JGRoigpX5Ss4r9ZnDk3g0Z8uQC2x2lPaJ+UlWBc1ZWBWdLg==}
+    engines: {node: '>=0.8'}
+    dev: false
 
   /consolidate/0.15.1:
     resolution: {integrity: sha512-DW46nrsMJgy9kqAbPt5rKaCr7uFtpo4mSUvLHIUbJEjm0vo+aY5QLwBUq3FK4tRnJr/X0Psc0C4jf/h+HtXSMw==}

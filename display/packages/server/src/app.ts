@@ -1,5 +1,6 @@
 import express from 'express'
 import indexRouter from '@/routes'
+import historyApiFallback from 'connect-history-api-fallback'
 import path from 'path'
 import logger from '@/middleware/logger'
 
@@ -10,7 +11,8 @@ app.disable('x-powered-by')
 
 // Enable morgan logging
 app.use(logger)
+app.use(historyApiFallback()) // fallback to html
+app.use(express.static(path.join(__dirname, '/public')))
 app.use('/_api', indexRouter)
-app.use('/', express.static(path.join(__dirname, 'public')))
 
 export default app
