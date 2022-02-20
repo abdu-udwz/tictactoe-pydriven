@@ -70,11 +70,17 @@
               tag="section"
             >
               <VCardText>
-                <VProgressCircular 
+                <div 
                   v-if="loadingBoard"
-                  indeterminate
-                  size="96"
-                />
+                  class="d-flex flex-column align-center justify-base"
+                >
+                  <VProgressCircular 
+                    indeterminate
+                    size="96"
+                  />
+                  <span class="text-subtitle-1 mt-4">Loading game..</span>
+                </div> 
+                
                 <GameBoard
                   v-if="!loadingBoard && board != null"
                   :value="board.matrix"
